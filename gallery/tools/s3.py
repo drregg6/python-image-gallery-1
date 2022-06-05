@@ -2,19 +2,8 @@ import logging
 import boto3
 from botocore.exceptions import ClientError
 
-
+# Create a bucket
 def create_bucket(bucket_name, region=None):
-    """Create an S3 bucket in a specified region
-
-    If a region is not specified, the bucket is created in the S3 default
-    region (us-east-1).
-
-    :param bucket_name: Bucket to create
-    :param region: String region to create bucket in, e.g., 'us-west-2'
-    :return: True if bucket created, else False
-    """
-
-    # Create bucket
     try:
         if region is None:
             s3_client = boto3.client('s3')
@@ -29,6 +18,7 @@ def create_bucket(bucket_name, region=None):
         return False
     return True
 
+# Add an object
 def put_object(bucket_name, key, value):
     try:
         s3_client = boto3.client('s3')
@@ -38,6 +28,7 @@ def put_object(bucket_name, key, value):
         return False
     return True
 
+# Get a project
 def get_object(bucket_name, key):
     try:
         s3_client = boto3.client('s3')
@@ -45,13 +36,17 @@ def get_object(bucket_name, key):
     except ClientError as e:
         logging.error(e)
         return None
+
+    # returns JSON object
     return result
     
 
 def main():
-    #create_bucket('edu.au.cc.image-gallery','us-east-2')
-    put_object('edu.au.cc.image-gallery', 'banana', 'green')
-    print(get_object('edu.au.cc.image-gallery', 'banana')['Body'].read())
+    # create_bucket('edu.au.cc.dzr-0056.image-gallery-2')
+    put_object('edu.au.cc.dzr-0056.image-gallery-2', 'banana', 'green')
+
+    # Get the data from the JSON object
+    print(get_object('edu.au.cc.dzr-0056.image-gallery-2', 'banana')['Body'].read())
 
 if __name__ == '__main__':
     main()
