@@ -74,18 +74,21 @@ class DbConnection:
         cursor = self.connection.cursor()
         query = 'insert into users (username, password, full_name) values (%s, %s, %s)'
         cursor.execute(query, (username, password, full_name))
+        self.connection.commit()
 
     def update_user(self, username, password, full_name):
         username = username.lower()
         cursor = self.connection.cursor()
         query = 'update users set password = %s, full_name = %s where username = %s'
         cursor.execute(query, (password, full_name, username))
+        self.connection.commit()
 
     def delete_user(self, username):
         cursor = self.connection.cursor()
         username = username.lower()
         query = 'delete from users where username = \'%s\'' % username
         cursor.execute(query)
+        self.connection.commit()
 
 
 def main():
@@ -94,6 +97,7 @@ def main():
     res = db.execute('select * from users')
     for row in res:
         print(row)
+    db.add_user('dave', 'simple', 'dave regg')
 
 if __name__ == '__main__':
     main()
