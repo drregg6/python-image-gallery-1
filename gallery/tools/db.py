@@ -2,7 +2,6 @@ import psycopg2
 import json
 from secrets import get_secret_image_gallery
 
-
 def read_secret_from_aws():
     json_string = get_secret_image_gallery()
     return json.loads(json_string)
@@ -27,27 +26,66 @@ def get_dbname(secret):
 class DbConnection:
     secret = None
 
-    @classmethod
-    def get_secret(cls):
-        if cls.secret is not None:
-            return cls.secret
-        secret = read_secret_from_aws()
-
     def __init__(self):
         self.connection = None
 
     def connect(self):
-        secret = self.get_secret()
-        self.connection = psycopg2.connect(host=get_host(secret), dbname=get_dbname(secret), user=get_username(secret),
-                                           password=get_password(secret))
+        secret = read_secret_from_aws()
+        print(secret)
+        self.connection = psycopg2.connect(host=get_host(secret), dbname=get_dbname(secret), user=get_username(secret), password=get_password(secret))
 
+    # cursor.execute will execute a query
     def execute(self, query, args=None):
         cursor = self.connection.cursor()
+        # no arguments, just execute
         if not args:
             cursor.execute(query)
+        # execute with arguments
         else:
             cursor.execute(query, args)
         return cursor
+
+    def get_users(self):
+        cursor = self.connection.cursor()
+        cursor.execute('select * from users')
+        s = '\n';
+        s += 'username   |   password   |   full_name'
+        s += '\n--------------------------------------------'
+        for row in cursor:
+            s += '\n'
+            for item in row:
+                s += item + '   |   '
+        return s
+
+    def get_user(self, username):
+        cursor = self.connection.cursor()
+        username = username.lower()
+        query = 'select * from users where username = \'%s\'' % username
+        cursor.execute(query)
+        s = ''
+        for row in cursor:
+            s += '\n'
+            for item in row:
+                s += item + ','
+        return s
+
+    def add_user(self, username, password, full_name):
+        username = username.lower()
+        cursor = self.connection.cursor()
+        query = 'insert into users (username, password, full_name) values (%s, %s, %s)'
+        cursor.execute(query, (username, password, full_name))
+
+    def update_user(self, username, password, full_name):
+        username = username.lower()
+        cursor = self.connection.cursor()
+        query = 'update users set password = %s, full_name = %s where username = %s'
+        cursor.execute(query, (password, full_name, username))
+
+    def delete_user(self, username):
+        cursor = self.connection.cursor()
+        username = username.lower()
+        query = 'delete from users where username = \'%s\'' % username
+        cursor.execute(query)
 
 
 def main():
@@ -56,7 +94,6 @@ def main():
     res = db.execute('select * from users')
     for row in res:
         print(row)
-
 
 if __name__ == '__main__':
     main()

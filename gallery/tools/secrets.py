@@ -1,5 +1,5 @@
 # Use this code snippet in your app.
-# If you need more information about configurations or implementing the sample code, visit the AWS docs:   
+# If you need more information about configurations or implementing the sample code, visit the AWS docs:
 # https://aws.amazon.com/developers/getting-started/python/
 
 import boto3
@@ -9,8 +9,8 @@ from botocore.exceptions import ClientError
 
 def get_secret_image_gallery():
 
-    secret_name = "sec-ig-image_gallery"
-    region_name = "us-east-2"
+    secret_name = "arn:aws:secretsmanager:us-east-1:011192121287:secret:ig-postgres-secret-y0fwjK"
+    region_name = "us-east-1"
 
     # Create a Secrets Manager client
     session = boto3.session.Session()
@@ -49,15 +49,15 @@ def get_secret_image_gallery():
             # Deal with the exception here, and/or rethrow at your discretion.
             raise e
     else:
-        # Decrypts secret using the associated KMS CMK.
+        # Decrypts secret using the associated KMS key.
         # Depending on whether the secret is a string or binary, one of these fields will be populated.
         if 'SecretString' in get_secret_value_response:
             secret = get_secret_value_response['SecretString']
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
-            
+
+    # Your code goes here.
     if secret is None:
         return decoded_binary_secret
     else:
         return secret
-    
