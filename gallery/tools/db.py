@@ -45,6 +45,14 @@ class DbConnection:
             cursor.execute(query, args)
         return cursor
 
+    def get_users_list(self):
+        cursor = self.connection.cursor()
+        cursor.execute('select * from users')
+        arr = []
+        for row in cursor:
+            arr.append(row)
+        return arr
+
     def get_users(self):
         cursor = self.connection.cursor()
         cursor.execute('select * from users')

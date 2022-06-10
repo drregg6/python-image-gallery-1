@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin | Create a User</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Create a User</h1>
+    <a href="/admin">Go back</a><br />
+    <form action="/admin/user-created" method="POST">
+      username: <input name="username" value="" /><br />
+      password: <input name="password" type="password" value="" /><br />
+      full name: <input name="full_name" type="text" value="" /><br />
+      <input type="submit" value="Create!" />
+    </form>
+  </body>
+</html>

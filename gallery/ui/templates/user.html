@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>{{ username }}'s Page</h1>
+    <a href="/admin">Go Back</a><br />
+    <h2>Modify for {{ user[0] }}</h2>
+    <form action="/admin/modified-user" method="POST">
+      username: <input name="username" value="{{ user[0] }}" disabled /><br />
+      password: <input name="password" type="password" value="{{ user[1] }}" /><br />
+      full name: <input name="full_name" type="text" value="{{ user[2] }}" /><br />
+      <input type="submit" value="Modify!" />
+    </form>
+  </body>
+</html>

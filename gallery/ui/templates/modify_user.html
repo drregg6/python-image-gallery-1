@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Admin | Modify</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Modify for {{ user[0] }}</h1>
+    <a href="/admin">Go Back</a><br />
+    <form action="/admin/modified-user" method="POST">
+      username: <input name="username" value="{{ user[0] }}" /><br />
+      password: <input name="password" type="password" value="{{ user[1] }}" /><br />
+      full name: <input name="full_name" type="text" value="{{ user[2] }}" /><br />
+      <input type="submit" value="Modify!" />
+    </form>
+  </body>
+</html>
+

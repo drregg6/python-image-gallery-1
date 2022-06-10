@@ -43,10 +43,11 @@ def get_object(bucket_name, key):
 
 def main():
     # create_bucket('edu.au.cc.dzr-0056.image-gallery-2')
-    put_object('edu.au.cc.dzr-0056.image-gallery-2', 'banana', 'green')
+    put_object('edu.au.cc.dzr-0056.image-gallery-2', 'banana', 'yellow')
 
     # Get the data from the JSON object
     print(get_object('edu.au.cc.dzr-0056.image-gallery-2', 'banana')['Body'].read())
+
 
 if __name__ == '__main__':
     main()
