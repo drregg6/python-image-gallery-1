@@ -1,4 +1,4 @@
-from db import DbConnection
+from gallery.tools.db import DbConnection
 
 def getUsers(db):
     res = db.execute('select * from users')

@@ -1,23 +1,15 @@
 from flask import Flask
 from flask import request
 from flask import render_template
+from gallery.data.db import connect
 
 app = Flask(__name__)
+connect()
 
 @app.route('/')
-def hello_world():
-    return """
-<!DOCTYPE html>
-<html>
-   <head>
-      <title>Hello</title>
-      <meta charset="utf-8" />
-   </head>
-   <body>
-     <a href="/admin">Proceed as admin</a>
-   </body>
-</html>
-"""
+def home():
+    return 'Hello World!'
+
 @app.route('/admin/')
 def admin():
     users = [('fred', 'password', 'fred flintstone'), ('barney', 'simple', 'barney rubble'), ('dino', 'dinosaur', 'dino dinosaur')]
