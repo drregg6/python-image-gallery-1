@@ -1,43 +1,56 @@
-from flask import Flask
-from flask import request
-from flask import render_template
+from flask import Flask, request, render_template, redirect
 from gallery.data.db import connect
+from gallery.data.postgres_user_dao import PostgresUserDAO
+
 
 app = Flask(__name__)
 connect()
 
+def postgres_user_dao():
+    return PostgresUserDAO()
+
 @app.route('/')
 def home():
-    return 'Hello World!'
+    return '<a href="/admin/users">Go to the Admin page</a>'
 
-@app.route('/admin/')
+@app.route('/admin/users/')
 def admin():
-    users = [('fred', 'password', 'fred flintstone'), ('barney', 'simple', 'barney rubble'), ('dino', 'dinosaur', 'dino dinosaur')]
-    return render_template('admin.html/', users=users)
+    return render_template('admin.html', users=postgres_user_dao().get_users())
 
-@app.route('/admin/<string:username>/')
+@app.route('/admin/users/<string:username>/')
 def get_user(username):
-    user = ('fred', 'password', 'fred flintstone')
-    return render_template('user.html', username=username, user=user)
+    return render_template('user.html', user=postgres_user_dao().get_user(username))
 
-@app.route('/admin/create-user')
+@app.route('/admin/create-user/')
 def create_user():
     return render_template('create_user.html')
 
-@app.route('/admin/user-created', methods = ['POST'])
+@app.route('/admin/user-created/', methods = ['POST'])
 def user_created():
     username = request.form['username']
     password = request.form['password']
     full_name = request.form['full_name']
-    return "User " + username + " has been created!"
+    postgres_user_dao().create_user(username, password, full_name)
+    return redirect("/admin/users")
 
-@app.route('/app/modified-user', methods = ['POST'])
+@app.route('/admin/modified-user/', methods = ['POST'])
 def modified_user():
+    print(request.form)
     username = request.form['username']
     password = request.form['password']
     full_name = request.form['full_name']
-    return 'User ' + username + ' has been modified!'
+    postgres_user_dao().modify_user(username, password, full_name)
+    return redirect("/admin/users")
 
-@app.route('/admin/<string:username>/delete')
+@app.route('/admin/delete/<string:username>/')
 def delete_user(username):
-    return "If you are sure you want to delete the user, <a href="">click here</a>"
+    return render_template("confirm.html",
+            title="Confirm delete",
+            msg="Are you sure you want to delete " + username + "? ",
+            on_yes="/admin/execute-delete/" + username + "/",
+            on_no="/admin/users/")
+
+@app.route('/admin/execute-delete/<string:username>/')
+def execute_delete_user(username):
+    postgres_user_dao().delete_user(username)
+    return redirect("/admin/users")
