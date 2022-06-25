@@ -17,8 +17,10 @@ class PostgresUserDAO(UserDAO):
         username = username.lower()
         cursor = db.execute("select username,password,full_name from users where username=%s", (username,))
         temp = cursor.fetchone()
-        res = User(temp[0], temp[1], temp[2])
-
+        if temp is None:
+            return None
+        else:
+            res = User(temp[0], temp[1], temp[2])
         return res
 
     def delete_user(self, username):

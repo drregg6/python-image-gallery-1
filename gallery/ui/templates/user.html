@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>User</title>
+    <title>Admin | User</title>
     <meta charset="utf-8" />
   </head>
   <body>
-    <h1>{{ username }}'s Page</h1>
+    <h1>{{ user.username }}'s Page</h1>
     <a href="/admin/users">Go Back</a><br />
     <h2>Modify for {{ user.username }}</h2>
     <form action="/admin/modified-user/" method="POST">

@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User | Upload Image</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Upload an Image</h1>
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for message in messages %}
+          <h2>{{ message }}</h2>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+    <a href="/">Go back</a><br />
+    <form action="/upload-image" method="POST">
+      <input type="file" multiple accept="image/* name="image" />
+      <input type="submit" value="Upload!" />
+    </form>
+  </body>
+</html>

@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User | Image Gallery</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Image Gallery</h1>
+    <a href="/">Go back</a><br />
+    {% for img in images %}
+    <ol>
+      <li><img src={{ img.source }} /></li>
+    </ol>
+  </body>
+</html>
