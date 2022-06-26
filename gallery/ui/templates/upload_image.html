@@ -14,8 +14,8 @@
       {% endif %}
     {% endwith %}
     <a href="/">Go back</a><br />
-    <form action="/upload-image" method="POST">
-      <input type="file" multiple accept="image/* name="image" />
+    <form action="/upload-image" method="POST" enctype="multipart/form-data">
+      <input type="file" name="image" multiple accept="image/*" />
       <input type="submit" value="Upload!" />
     </form>
   </body>

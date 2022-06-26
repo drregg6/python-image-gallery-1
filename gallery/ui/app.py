@@ -1,15 +1,24 @@
 from flask import Flask, request, render_template, redirect, session, flash
 from gallery.data.db import connect
 from gallery.data.postgres_user_dao import PostgresUserDAO
+from gallery.data.postgres_image_dao import PostgresImageDAO
 from gallery.data.secrets import get_secret_flask_session
+from werkzeug.utils import secure_filename
 from functools import wraps
 
 app = Flask(__name__)
 app.secret_key = get_secret_flask_session()
 connect()
 
+##############################
+######### HELPERS ############
+##############################
+
 def postgres_user_dao():
     return PostgresUserDAO()
+
+def postgres_image_dao():
+    return PostgresImageDAO()
 
 def check_admin():
     return 'username' in session and session['username'] == 'fred'
@@ -123,9 +132,18 @@ def execute_delete_user(username):
 @requires_user
 def upload_image():
     if request.method == 'POST':
-        image = request.form['image']
+        # get vars
+        image = request.files['image']
         username = session['username']
+        if image.filename == '':
+            flash('Please upload an image')
+            return redirect('/upload-image')
+        
         # save image in the username bucket
+        path = username + "/" + secure_filename(image.filename)
+        postgres_image_dao().add_image(username, image, path)
+
+        # redirect
         flash('Image uploaded successfully!')
         return redirect('/upload-image')
     else:
