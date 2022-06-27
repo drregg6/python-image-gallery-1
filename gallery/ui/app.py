@@ -12,7 +12,6 @@ connect()
 ##############################
 ######### HELPERS ############
 ##############################
-
 def postgres_user_dao():
     return PostgresUserDAO()
 
@@ -148,6 +147,7 @@ def execute_delete_user(username):
 @app.route('/upload-image/', methods = ['GET', 'POST'])
 @requires_user
 def upload_image():
+    print('hit route')
     if request.method == 'POST':
         # get vars
         image = request.files['image']
@@ -163,7 +163,7 @@ def upload_image():
 
         # redirect
         flash('Image uploaded successfully!')
-        return redirect('/upload-image')
+        return redirect('/upload-image/')
     else:
         return render_template('upload_image.html')
 

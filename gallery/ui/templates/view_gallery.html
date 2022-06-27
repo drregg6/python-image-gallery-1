@@ -10,7 +10,7 @@
     {% for image in images %}
     <ul>
 	    <li>
-		    <a href="/view-gallery/{{ username }}/{{ image.image_name }}/"><img src="{{ image.url }}" /></a><br />
+		    <a href="/view-gallery/{{ username }}/{{ image.image_name }}/"><img src="{{ image.url }}" width='350' height='auto' /></a><br />
 		    <a href="/delete-image/{{ image.image_name }}">Delete image</a>
 	    </li>
     </ul>
