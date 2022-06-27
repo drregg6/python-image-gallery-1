@@ -14,9 +14,15 @@
      {% endif %}
    {% endwith %}
     <ol>
-      <li><a href="/login">Login</a></li>
+      {% if username %}
+        <li><a href="/logout">Logout</a></li>
+      {% else %}
+        <li><a href="/login">Login</a></li>
+      {% endif %}
       <li><a href="/upload-image">Upload an Image</a></li>
-      <li><a href="/view-gallery">View an Image</a></li>
+      {% if username %}
+      <li><a href="/view-gallery/{{username}}">View Your Gallery</a></li>
+      {% endif %}
       <li><a href="/admin/users">Go to the Admin page</a></li>
   </body>
 </html>

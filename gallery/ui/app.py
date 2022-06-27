@@ -3,7 +3,6 @@ from gallery.data.db import connect
 from gallery.data.postgres_user_dao import PostgresUserDAO
 from gallery.data.postgres_image_dao import PostgresImageDAO
 from gallery.data.secrets import get_secret_flask_session
-from werkzeug.utils import secure_filename
 from functools import wraps
 
 app = Flask(__name__)
@@ -49,10 +48,14 @@ def requires_admin(view):
 
 @app.route('/')
 def home():
-    return render_template('index.html')
+    if 'username' in session:
+        username = session['username']
+    else:
+        username = None
+    return render_template('index.html', username=username)
 
 #############################
-####### ADMIN ROUTES ########
+######## AUTH ROUTES ########
 #############################
 
 @app.route('/login/', methods = ['GET', 'POST'])
@@ -69,12 +72,26 @@ def login():
     else:
         return render_template('login.html')
 
+@app.route('/logout/')
+def logout():
+    if 'username' in session:
+        session.pop('username')
+        flash('Logout successful')
+        return redirect('/')
+    else:
+        flash('Cannot locate user')
+        return redirect('/')
+
 @app.route('/debugSession/')
 def debug_session():
     result = ""
     for key,value in session.items():
         result += key + "=>" + str(value) + "<br />"
     return result
+
+#############################
+####### ADMIN ROUTES ########
+#############################
 
 @app.route('/admin/users/')
 @requires_admin
@@ -138,9 +155,10 @@ def upload_image():
         if image.filename == '':
             flash('Please upload an image')
             return redirect('/upload-image')
-        
+        print(image)
+        print(image.filename)
         # save image in the username bucket
-        path = username + "/" + secure_filename(image.filename)
+        path = username + "/" + image.filename
         postgres_image_dao().add_image(username, image, path)
 
         # redirect
@@ -148,9 +166,34 @@ def upload_image():
         return redirect('/upload-image')
     else:
         return render_template('upload_image.html')
-#WIP
-#@app.route('/view-gallery/')
-#@requires_user
-# images = [{"name": "image", "src": "http://placehold.it/50x50"}]
-#def view_gallery():
-#    return render_template('view_gallery.html', images=images)
+
+@app.route('/view-gallery/<string:username>/')
+@requires_user
+def view_gallery(username):
+    # get user images
+    return render_template('view_gallery.html', username=username, images=postgres_image_dao().get_images(username))
+
+@app.route('/view-gallery/<string:username>/<string:image>/')
+@requires_user
+def view_image(username, image):
+    return render_template('view_image.html', image=postgres_image_dao().get_image(username, image))
+
+@app.route('/delete-image/<string:image>/')
+@requires_user
+def delete_image(image):
+        username = session['username']
+        image_obj = postgres_image_dao().get_image(username, image)
+        return render_template("confirm.html",
+            title="Confirm delete",
+            msg="Are you sure you want to delete " + image_obj.image_name + "? ",
+            on_yes="/delete-image/execute-delete/" + image_obj.image_name + "/",
+            on_no="/admin/users/")
+
+@app.route('/delete-image/execute-delete/<string:image>/')
+def execute_delete_image(image):
+    username = session['username']
+    image_obj = postgres_image_dao().get_image(username, image)
+    print(repr(image_obj))
+    postgres_image_dao().delete_image(image_obj)
+    flash('Image deleted')
+    return redirect('/')

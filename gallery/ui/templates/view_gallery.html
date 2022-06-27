@@ -1,0 +1,19 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>User | Image Gallery</title>
+    <meta charset="utf-8" />
+  </head>
+  <body>
+    <h1>Image Gallery</h1>
+    <a href="/">Go back</a><br />
+    {% for image in images %}
+    <ul>
+	    <li>
+		    <a href="/view-gallery/{{ username }}/{{ image.image_name }}/"><img src="{{ image.url }}" /></a><br />
+		    <a href="/delete-image/{{ image.image_name }}">Delete image</a>
+	    </li>
+    </ul>
+    {% endfor %}
+  </body>
+</html>
