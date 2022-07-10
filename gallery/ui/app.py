@@ -9,6 +9,8 @@ app = Flask(__name__)
 app.secret_key = get_secret_flask_session()
 connect()
 
+print('in app')
+
 ##############################
 ######### HELPERS ############
 ##############################

@@ -9,9 +9,12 @@ def get_secret():
     return json.loads(json_string)
 
 def connect():
+    print('connecting...')
     global connection
     secret = get_secret()
+    print('got secret')
     connection = psycopg2.connect(host=secret['host'], dbname=secret['database_name'], user=secret['username'], password=secret['password'])
+    print('connected')
 
 def execute(query, args=None):
     cursor = connection.cursor()

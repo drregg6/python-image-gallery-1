@@ -5,7 +5,7 @@ from botocore.exceptions import ClientError
 
 def get_secret_image_gallery():
 
-    secret_name = "arn:aws:secretsmanager:us-east-1:011192121287:secret:ig-image-gallery-secret-9iQl8P"
+    secret_name = "arn:aws:secretsmanager:us-east-1:011192121287:secret:ig-secret-image-gallery-fR8vhV"
     region_name = "us-east-1"
 
     # Create a Secrets Manager client
@@ -61,7 +61,7 @@ def get_secret_image_gallery():
 
 def get_secret_flask_session():
 
-    secret_name = "arn:aws:secretsmanager:us-east-1:011192121287:secret:ig-image-gallery-secret-9iQl8P"
+    secret_name = "arn:aws:secretsmanager:us-east-1:011192121287:secret:ig-flask-session-secret-RyIyyM"
     region_name = "us-east-1"
 
     # Create a Secrets Manager client
@@ -79,6 +79,7 @@ def get_secret_flask_session():
         get_secret_value_response = client.get_secret_value(
             SecretId=secret_name
         )
+        print('cannot get secretId')
     except ClientError as e:
         if e.response['Error']['Code'] == 'DecryptionFailureException':
             # Secrets Manager can't decrypt the protected secret text using the provided KMS key.
@@ -108,6 +109,7 @@ def get_secret_flask_session():
         else:
             decoded_binary_secret = base64.b64decode(get_secret_value_response['SecretBinary'])
 
+    print('more from flask secret')
     # Your code goes here.
     if secret is None:
         return decoded_binary_secret
